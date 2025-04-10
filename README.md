@@ -32,6 +32,71 @@
 7.	Compile that file with C compiler and verify the output.
 
 # INPUT
+```
+#include <stdio.h>
+#include <ctype.h>
+#include <string.h>
+
+int isKeyword(char buffer[]) {
+    char keywords[5][10] = {"if", "else", "while", "for", "int"};
+    for (int i = 0; i < 5; ++i) {
+        if (strcmp(buffer, keywords[i]) == 0) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+int main() {
+    char ch, buffer[15];
+    char operators[] = "+-*/=";
+    int i = 0;
+
+    printf("Enter your input :\n");
+
+    while ((ch = getchar()) != EOF) {
+        // If it's an operator
+        if (strchr(operators, ch)) {
+            printf("Operator: %c\n", ch);
+        }
+        // If it's alphanumeric, store it in the buffer
+        else if (isalnum(ch)) {
+            if (i < sizeof(buffer) - 1) { // Prevent buffer overflow
+                buffer[i++] = ch;
+            }
+        }
+        // On whitespace or delimiter, process the token
+        else if ((ch == ' ' || ch == '\n' || ch == '\t') && i > 0) {
+            buffer[i] = '\0';
+            i = 0;
+
+            if (isKeyword(buffer)) {
+                printf("Keyword: %s\n", buffer);
+            } else if (isdigit(buffer[0])) {
+                printf("Number: %s\n", buffer);
+            } else {
+                printf("Identifier: %s\n", buffer);
+            }
+        }
+    }
+
+    // Handle last token if EOF ends without whitespace
+    if (i > 0) {
+        buffer[i] = '\0';
+        if (isKeyword(buffer)) {
+            printf("Keyword: %s\n", buffer);
+        } else if (isdigit(buffer[0])) {
+            printf("Number: %s\n", buffer);
+        } else {
+            printf("Identifier: %s\n", buffer);
+        }
+    }
+
+    return 0;
+}
+```
 # OUTPUT
+![Screenshot 2025-04-10 114122](https://github.com/user-attachments/assets/00d839a9-6a7f-442c-8e20-f47b8bccf8d8)
+
 # RESULT
 ## The lexical analyzer is implemented using lex and the output is verified.
